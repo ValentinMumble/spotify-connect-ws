@@ -11,7 +11,7 @@ export const getPlayerState = accessToken => {
       }
     })
       .then(response => {
-        if (response.status === 202) {
+        if (response.status === 202 || response.status === 204) {
           return resolve({})
         }
         return response
@@ -74,7 +74,12 @@ export const transferPlayback = (accessToken, { id, play = false }) => {
       },
       body: JSON.stringify(body)
     })
-      .then(r => r.json())
+      .then(r => {
+        if (r.status === 202 || r.status === 204) {
+          return resolve()
+        }
+        return r.json()
+      })
       .then(response => {
         if (response.error) {
           return reject(response.error.message)

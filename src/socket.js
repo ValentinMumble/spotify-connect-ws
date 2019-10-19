@@ -20,10 +20,11 @@ const spotifyConnectWs = socket => {
   socket.use((packet, next) => {
     if (packet[0] !== 'initiate') {
       if (!socket.accessToken) {
-        return socket.emit(
-          C.CONNECT_ERROR,
-          'Access token not found: ensure to `initiate` with an access token before attempting other requests.'
-        )
+        return socket.emit(C.CONNECT_ERROR, {
+          name: 'NoAccessToken',
+          message:
+            'Access token not found: ensure to `initiate` with an access token before attempting other requests.'
+        })
       }
     }
     next()
@@ -52,6 +53,7 @@ const spotifyConnectWs = socket => {
     }
 
     socket.accessToken = accessToken
+    socket.pollRate = C.POLL_RATE
     socket.poll()
   })
 
@@ -59,7 +61,11 @@ const spotifyConnectWs = socket => {
     getPlayerState(socket.accessToken)
       .then(playerState => {
         if (!playerState.device) {
-          handleError('No active device')
+          handleError({
+            name: 'NoActiveDeviceError',
+            message: 'No active device.'
+          })
+          socket.hasSentInitialState = false
           return
         }
         if (!socket.hasSentInitialState) {
