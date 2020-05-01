@@ -33,7 +33,7 @@ const spotifyConnectWs = socket => {
   const handleError = error => {
     const message = error.message || error
     if (message !== socket.lastSentError) {
-      socket.emit(C.CONNECT_ERROR, error)
+      socket.emit(C.CONNECT_ERROR, {name: error.name || error, message})
       socket.lastSentError = message
     } else {
       socket.pollRate = socket.pollRate < 5000 ? socket.pollRate + 1000 : 5000
