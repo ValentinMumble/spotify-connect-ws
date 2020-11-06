@@ -17,18 +17,18 @@ const C = {
 }
 
 const spotifyConnectWs = socket => {
-  socket.use((packet, next) => {
-    if (packet[0] !== 'initiate') {
-      if (!socket.accessToken) {
-        return socket.emit(C.CONNECT_ERROR, {
-          name: 'NoAccessToken',
-          message:
-            'Access token not found: ensure to `initiate` with an access token before attempting other requests.'
-        })
-      }
-    }
-    next()
-  })
+  // socket.use((packet, next) => {
+  //   if (packet[0] !== 'initiate') {
+  //     if (!socket.accessToken) {
+  //       return socket.emit(C.CONNECT_ERROR, {
+  //         name: 'NoAccessToken',
+  //         message:
+  //           'Access token not found: ensure to `initiate` with an access token before attempting other requests.'
+  //       })
+  //     }
+  //   }
+  //   next()
+  // })
 
   const handleError = error => {
     const message = error.message || error
